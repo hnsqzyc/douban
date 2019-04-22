@@ -59,40 +59,40 @@ class DbanSpider(scrapy.Spider):
         logging.info('爬取结束了...')
 
     def start_requests(self):
-        # while 1:
-        # 注意页面乘积数, 有可能在变动
-        res = self.user_ids.find({'status': 0}).limit(100)
-        if res.count():
-            for info in res:
-                user_id = info.get('user_id')
+        while 1:
+            # 注意页面乘积数, 有可能在变动
+            res = self.user_ids.find({'status': 0}).limit(100)
+            if res.count():
+                for info in res:
+                    user_id = info.get('user_id')
 
-                # 请求的时候把状态修改为1, 说明已经请求过了
-                con = self.user_ids.update({'user_id': user_id}, {'$set': {'status': 1}})
+                    # 请求的时候把状态修改为1, 说明已经请求过了
+                    con = self.user_ids.update({'user_id': user_id}, {'$set': {'status': 1}})
 
-                page = 0
-                url = 'https://movie.douban.com/celebrity/{}/partners?start={}'
-                meta = {}
-                header = {
-                    "Host": "movie.douban.com",
-                    "Connection": "keep-alive",
-                    "Upgrade-Insecure-Requests": "1",
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
-                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
-                    "Referer": "https://movie.douban.com/celebrity/%s/" % (user_id),
-                    "Accept-Encoding": "gzip, deflate, br",
-                    "Accept-Language": "zh-CN,zh;q=0.9"
-                }
+                    page = 0
+                    url = 'https://movie.douban.com/celebrity/{}/partners?start={}'
+                    meta = {}
+                    header = {
+                        "Host": "movie.douban.com",
+                        "Connection": "keep-alive",
+                        "Upgrade-Insecure-Requests": "1",
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36",
+                        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+                        "Referer": "https://movie.douban.com/celebrity/%s/" % (user_id),
+                        "Accept-Encoding": "gzip, deflate, br",
+                        "Accept-Language": "zh-CN,zh;q=0.9"
+                    }
 
-                meta['page'] = 0
-                meta['url'] = url
-                meta['header'] = header
-                meta['user_id'] = user_id
+                    meta['page'] = 0
+                    meta['url'] = url
+                    meta['header'] = header
+                    meta['user_id'] = user_id
 
-                yield Request(url=url.format(user_id, page), headers=header, callback=self.parse_links, meta=meta)
+                    yield Request(url=url.format(user_id, page), headers=header, callback=self.parse_links, meta=meta)
 
-        else:
-            logging.warning('用户id采集完毕, return...')
-            return
+            else:
+                logging.warning('用户id采集完毕, return...')
+                return
 
     def parse_links(self, response):
 

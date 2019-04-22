@@ -74,7 +74,7 @@ RETRY_HTTP_CODES = [500, 502] # default is  [500, 502, 503, 504, 408]
 HANDLE_PROXY_ERROR_CODES = [400, 401, 403, 407, 408, 503, 504]
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 10
+CONCURRENT_REQUESTS = 5
 
 REDIRECT_ENALBED = False
 

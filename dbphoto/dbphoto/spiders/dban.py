@@ -101,11 +101,6 @@ class DbanSpider(scrapy.Spider):
 
         cons = response.xpath('//div[@class="partners item"]')
 
-        page_num_counts = response.xpath('//div//span[@class="count"]/text()')[0].extract()
-        page_num_countss = re.findall(r'(\d+)', page_num_counts)[0]
-        page_num_count = int(int(page_num_countss) / 10) + 1
-        print('人员链接页面数量 page_num_count: ', page_num_count)
-
         for con in cons:
 
             item_tuple = {}
@@ -126,11 +121,27 @@ class DbanSpider(scrapy.Spider):
                 item_tuples = item_tuple.copy()
                 result = self.user_ids.insert_one(item_tuples)
 
-        meta['page'] = int((meta['page']/10 + 1)) * 10  # 人物链接页面时10
+        # 统计页面数量,不足一页的时候就会报错
+        page_num_counts_1 = response.xpath('//div//span[@class="count"]/text()')  # https://movie.douban.com/celebrity/1327320/partners
+        if cons and page_num_counts_1:
+            global page_num_count
+            page_num_counts = page_num_counts_1[0].extract()
+            page_num_countss = re.findall(r'(\d+)', page_num_counts)[0]
+            page_num_count = int(int(page_num_countss) / 10) + 1
+            print('人员链接页面数量 page_num_count: ', page_num_count)
+        elif cons:
+            page_num_count = 1
+            logging.info('人员链接页面数量 page_num_count: 为1')
+        else:
+            page_num_count = 0
+            logging.warning('人员链接页面数量 page_num_count: 为空...')
 
-        print('请求第 %s 页' % (int((meta['page']/10 + 1))))
-        if int(meta.get('page')) > (page_num_count - 1) * 10:
-            logging.warning('请求页数大于页面数量, return')
-            return
+        if page_num_count > 1:
+            meta['page'] = int((meta['page']/10 + 1)) * 10  # 人物链接页面时10
 
-        yield Request(url=meta['url'].format(meta['user_id'], meta['page']), headers=meta['header'], callback=self.parse_links, meta=meta)
+            print('请求第 %s 页' % (int((meta['page']/10 + 1))))
+            if int(meta.get('page')) > (page_num_count - 1) * 10:
+                logging.warning('请求页数大于页面数量, return')
+                return
+
+            yield Request(url=meta['url'].format(meta['user_id'], meta['page']), headers=meta['header'], callback=self.parse_links, meta=meta)

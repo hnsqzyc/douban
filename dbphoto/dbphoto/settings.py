@@ -29,18 +29,18 @@ DATA_DIR = r'/mnt/sjjy/'
 
 # LOG_FILE = "mySpider.log"
 
-# REDIS = {
-#     'url': None,
-#     'host': '47.105.103.8',
-#     'port': 56789,
-#     'password': '12345678'
-#     }
-
 REDIS = {
- #   'url': None,
-    'host': '172.181.217.58',
-    'port': 6379,
+    'url': None,
+    'host': '47.105.103.8',
+    'port': 56789,
+    'password': '12345678'
     }
+
+# REDIS = {
+#  #   'url': None,
+#     'host': '172.181.217.58',
+#     'port': 6379,
+#     }
 
 MONGODB = {
     'url': 'mongodb://47.105.103.8:27017/',

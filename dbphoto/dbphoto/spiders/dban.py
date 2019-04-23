@@ -1,17 +1,8 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import scrapy
 import json
 import re
-import os
-import csv
-import codecs
-import copy
-import hashlib
-import time
 import logging
-from urllib import parse
-from random import choice
 from scrapy import signals
 from scrapy.item import Item, Field
 from scrapy.http import Request, FormRequest
@@ -65,6 +56,7 @@ class DbanSpider(scrapy.Spider):
             if res.count():
                 for info in res:
                     user_id = info.get('user_id')
+                    user_name = info.get('user_name')
 
                     # 请求的时候把状态修改为1, 说明已经请求过了
                     con = self.user_ids.update({'user_id': user_id}, {'$set': {'status': 1}})
@@ -87,6 +79,7 @@ class DbanSpider(scrapy.Spider):
                     meta['url'] = url
                     meta['header'] = header
                     meta['user_id'] = user_id
+                    meta['user_name'] = user_name
 
                     yield Request(url=url.format(user_id, page), headers=header, callback=self.parse_links, meta=meta)
 
@@ -121,26 +114,39 @@ class DbanSpider(scrapy.Spider):
                 item_tuples = item_tuple.copy()
                 result = self.user_ids.insert_one(item_tuples)
 
-        # 统计页面数量,不足一页的时候就会报错
-        page_num_counts_1 = response.xpath('//div//span[@class="count"]/text()')  # https://movie.douban.com/celebrity/1327320/partners
-        if cons and page_num_counts_1:
-            global page_num_count
-            page_num_counts = page_num_counts_1[0].extract()
-            page_num_countss = re.findall(r'(\d+)', page_num_counts)[0]
-            page_num_count = int(int(page_num_countss) / 10) + 1
-            print('人员链接页面数量 page_num_count: ', page_num_count)
-        elif cons:
-            page_num_count = 1
-            logging.info('人员链接页面数量 page_num_count: 为1')
-        else:
-            page_num_count = 0
-            logging.warning('人员链接页面数量 page_num_count: 为空...')
+        # # 统计页面数量,不足一页的时候就会报错
+        # page_num_counts_1 = response.xpath('//div//span[@class="count"]/text()')  # https://movie.douban.com/celebrity/1327320/partners
+        # if cons and page_num_counts_1:
+        #     global page_num_count
+        #     page_num_counts = page_num_counts_1[0].extract()
+        #     page_num_countss = re.findall(r'(\d+)', page_num_counts)[0]
+        #     page_num_count = int(int(page_num_countss) / 10) + 1
+        #     print('人员链接页面数量 page_num_count: ', page_num_count)
+        # elif cons:
+        #     page_num_count = 1
+        #     logging.info('人员链接页面数量 page_num_count: 为1')
+        # else:
+        #     page_num_count = 0
+        #     logging.warning('人员链接页面数量 page_num_count: 为空...')
 
-        if page_num_count > 1:
+        # 页面数量
+        page_nums = response.xpath('//div[@class="paginator"]/a/text()')
+
+        # 如果有图片链接并且页面链接不为空
+        if cons and page_nums:
+            global page_num
+            page_num = int(page_nums[-1].extract())
+            print('人员图片页面数量page_num: ', meta['user_name'], page_num)
+        elif cons:
+            page_num = 0
+        else:
+            page_num = -1
+
+        if page_num > 1:
             meta['page'] = int((meta['page']/10 + 1)) * 10  # 人物链接页面时10
 
             print('请求第 %s 页' % (int((meta['page']/10 + 1))))
-            if int(meta.get('page')) > (page_num_count - 1) * 10:
+            if int(meta.get('page')) > (page_num - 1) * 10:
                 logging.warning('请求页数大于页面数量, return')
                 return
 

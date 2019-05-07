@@ -141,3 +141,57 @@ db.sjjy.find({'photo_num': {'$gt': 4, '$ne': 900}, 'status': 1}, {'_id': 0, 'rea
 54150436
 db.sjjy.find({'realUid':118867985})
 db.sjjy.update({'realUid':54150436},{'$set':{'img_url_li':[]}})
+----------------------------------------------------------------------------------------------------
+db.sjjy.find().count()
+db.sjjy.find({'photo_num':{'$lte':4}}).count()
+
+db.sjjy.find({'status':1}).count()
+db.sjjy.find({'status':1, 'photo_num':{'$gte':5}}).count()
+db.sjjy.find({'status':0}).count()
+
+db.sjjy.find({'photo_num':{'$gte':5}}).count()
+
+db.sjjy.find({'status':2}).count()
+db.sjjy.find({'status':100}).count()
+
+db.sjjy.find({'status':9})
+db.sjjy.find({'status':9}).count()
+
+db.sjjy.find({'status':8})
+db.sjjy.find({'status':8}).count()
+db.sjjy.find({'status': 8,'photo_num':900}, {'_id': 0, 'realUid': 1})
+
+db.sjjy.find({'status':7})
+db.sjjy.find({'status':7}).count()
+db.sjjy.find({'status':7, 'photo_num':{'$lte':4}})
+db.sjjy.find({'status':7, 'photo_num':{'$gte':5, '$ne': 900},'img_url_li':[]}).count()
+db.sjjy.find({'status':7, 'photo_num':{'$gte':5, '$ne': 900}}, {'_id': 0, 'realUid': 1}).count()
+db.sjjy.find({'status':7, 'photo_num':{'$gte':5, '$ne': 900},'img_url_li':[]}, {'_id': 0, 'realUid': 1}).count()
+db.sjjy.find({'status':7, 'photo_num':{'$gte':5, '$ne': 900},'img_url_li':{'$ne':[]}}, {'_id': 0, 'realUid': 1, 'sexValue': 1, 'img_url_li': 1}).count()
+
+
+db.sjjy.find({'img_url_li': []}).count()
+
+db.sjjy.getIndexes()
+
+db.sjjy.find({'img_url_li':{$regex:'/jpg$/'}})
+
+
+db.sjjy.find({'img_url_li.0.0':{$regex:'bp.jpg'}, photo_num:{$gte:5}}, {_id:0, realUid:1, 'img_url_li':1}).count()
+
+
+db.sjjy.find({'img_url_li.0.0':{$regex:'xjhykj_f_bp'}, photo_num:{$gte:5}}, {_id:0, realUid:1, 'img_url_li':1,'status':1})
+db.sjjy.find({'img_url_li.0.0':{$regex:'xyaqmm_f_bp'}, photo_num:{$gte:5}}, {_id:0, realUid:1, 'img_url_li':1,'status':1})
+db.sjjy.find({'img_url_li.0.0':{$regex:'zchykj_f_bp'}, photo_num:{$gte:5}}, {_id:0, realUid:1, 'img_url_li':1,'status':1})
+db.sjjy.find({'img_url_li.0.0':{$regex:'yzphykj_f_bp'}, photo_num:{$gte:5}}, {_id:0, realUid:1, 'img_url_li':1,'status':1})
+
+
+db.sjjy.find({'realUid':22181390})
+
+db.sjjy.find({'photo_num': {'$gt': 4, '$ne': 900}, 'status': 1}, {'_id': 0, 'realUid': 1, 'sexValue': 1, 'img_url_li': 1}).count()
+
+54150436
+db.sjjy.find({'realUid':36279238})
+db.sjjy.update({'realUid':17856872},{'$set':{'status':8}})
+
+db.sjjy.find({'status': 8}, {'_id': 0, 'realUid': 1}).limit(1)

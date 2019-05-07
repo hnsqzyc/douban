@@ -60,11 +60,10 @@ class DbanSpider(scrapy.Spider):
     def start_requests(self):
         # while 1:
         # 注意页面乘积数, 有可能在变动
-        res = self.user_ids.find({'status': 1}).limit(1)
+        res = self.user_ids.find({'status': 1}).limit(2)
         if res.count():
             for info in res:
-                # user_id = info.get('user_id')
-                user_id = str(1100293)
+                user_id = info.get('user_id')
 
                 # 请求的时候把状态修改为1, 说明已经请求过了
                 con = self.user_ids.update({'user_id': user_id}, {'$set': {'status': 2}})

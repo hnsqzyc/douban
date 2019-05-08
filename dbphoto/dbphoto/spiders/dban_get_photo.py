@@ -64,7 +64,7 @@ class DbanSpider(scrapy.Spider):
             if res.count():
                 for info in res:
                     user_id = info.get('user_id')
-
+                    user_name = info.get('user_name')
                     # 请求的时候把状态修改为1, 说明已经请求过了
                     con = self.user_ids.update({'user_id': user_id}, {'$set': {'status': 2}})
 
@@ -88,6 +88,7 @@ class DbanSpider(scrapy.Spider):
                     meta['url'] = url
                     meta['header'] = header
                     meta['user_id'] = user_id
+                    meta['user_name'] = user_name
 
                     yield Request(url=url.format(user_id, page), headers=header, callback=self.parse_links, meta=meta)
 
@@ -121,9 +122,9 @@ class DbanSpider(scrapy.Spider):
                     "Accept-Language": "zh-CN,zh;q=0.9"
                 }
 
-                if not os.path.exists(settings['DATA_DIR'] + str(meta['user_id'])):
-                    os.mkdir(settings['DATA_DIR'] + str(meta['user_id']))
-                save_location = os.path.join(settings['DATA_DIR'], str(meta['user_id']))
+                if not os.path.exists(settings['DATA_DIR'] + str(meta['user_id']) + '_' + meta['user_name']):
+                    os.mkdir(settings['DATA_DIR'] + str(meta['user_id']) + '_' + meta['user_name'])
+                save_location = os.path.join(settings['DATA_DIR'], str(meta['user_id']) + '_' + meta['user_name'])
 
                 file_name = os.path.join(save_location, str(img_id) + '.jpg')
 

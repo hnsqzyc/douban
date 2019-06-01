@@ -43,7 +43,7 @@ REDIS = {
     }
 
 MONGODB = {
-    'url': 'mongodb://47.105.103.8:27017/',
+    'url': 'mongodb://zkst:lima2018@47.105.103.8:27017/',
     'host': '47.105.103.8',
     'port': 6379,
     'password': ''
@@ -74,14 +74,14 @@ RETRY_HTTP_CODES = [500, 502] # default is  [500, 502, 503, 504, 408]
 HANDLE_PROXY_ERROR_CODES = [400, 401, 403, 407, 408, 503, 504]
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 1
+CONCURRENT_REQUESTS = 5
 
 REDIRECT_ENALBED = False
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY = 0.8
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 16
 #CONCURRENT_REQUESTS_PER_IP = 16
